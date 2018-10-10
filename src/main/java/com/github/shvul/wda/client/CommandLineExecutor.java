@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class CommandLineExecutor {
 
@@ -17,34 +16,45 @@ public class CommandLineExecutor {
 
     public static String execute(String[] command, int timeout) {
         Process process = null;
-        String output = null;
         try {
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.redirectErrorStream(true);
-            process = builder.start();
+            process = createProcess(command);
             process.waitFor(timeout, TimeUnit.SECONDS);
-            output = getOutput(process);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            return getOutput(process);
+        } catch (InterruptedException | IOException e) {
+            throw new WebDriverAgentException(e);
         } finally {
             if (process != null) {
                 process.destroyForcibly();
             }
         }
-        return output;
     }
 
-    private static String getOutput(Process process) throws IOException {
-        String error = getResult(process.getErrorStream());
-        if (error == null) {
-            return getResult(process.getInputStream());
+    public static Process createProcess(String[] command) {
+        try {
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.redirectErrorStream(true);
+            return builder.start();
+        } catch (IOException e) {
+            throw new WebDriverAgentException(e);
+        }
+    }
+
+    public static String getOutput(Process process) throws IOException {
+        String error = getOutput(process.getErrorStream());
+        if (error.isEmpty()) {
+            return getOutput(process.getInputStream());
         }
         return error;
     }
 
-    private static String getResult(InputStream input) throws IOException {
+    public static String getOutput(InputStream input) throws IOException {
+        StringBuilder builder = new StringBuilder();
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-            return buffer.lines().collect(Collectors.joining("\n"));
+            while (buffer.ready()) {
+                builder.append(buffer.readLine());
+                builder.append("\n");
+            }
         }
+        return builder.toString();
     }
 }
