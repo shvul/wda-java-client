@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="WDA Java Client">
+    <Properties>
+        <property name="LOG_DIR">logs</property>
+        <property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{5} - %msg%n</property>
+    </Properties>
+    <ThresholdFilter level="trace"/>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <File name="File" fileName="${LOG_DIR}/client.log" append="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <Appender-ref ref="File" level="trace"/>
+            <Appender-ref ref="Console" level="trace"/>
+        </Root>
+    </Loggers>
+</Configuration>
