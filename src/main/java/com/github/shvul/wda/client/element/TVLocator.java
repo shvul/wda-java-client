@@ -16,23 +16,75 @@
 
 package com.github.shvul.wda.client.element;
 
-public enum TVLocator {
-    ID("id"),
-    NAME("name"),
-    ACCESSIBILITY_ID("accessibility id"),
-    NS_PREDICATE("predicate string"),
-    CLASS_CHAIN("class chain"),
-    CLASS_NAME("class name"),
-    LINK_TEXT("link text"),
-    XPATH("xpath");
+public class TVLocator {
 
-    private String selector;
+    private Selector selector;
+    private String value;
 
-    TVLocator(String selector) {
+    private TVLocator(Selector selector, String value) {
         this.selector = selector;
+        this.value = value;
     }
 
-    private String getSelector() {
+    public static TVLocator id(String value) {
+        return new TVLocator(Selector.ID, value);
+    }
+
+    public static TVLocator name(String value) {
+        return new TVLocator(Selector.NAME, value);
+    }
+
+    public static TVLocator accessibilityId(String value) {
+        return new TVLocator(Selector.ACCESSIBILITY_ID, value);
+    }
+
+    public static TVLocator predicate(String value) {
+        return new TVLocator(Selector.NS_PREDICATE, value);
+    }
+
+    public static TVLocator classChain(String value) {
+        return new TVLocator(Selector.CLASS_CHAIN, value);
+    }
+
+    public static TVLocator className(String value) {
+        return new TVLocator(Selector.CLASS_NAME, value);
+    }
+
+    public static TVLocator linkText(String value) {
+        return new TVLocator(Selector.LINK_TEXT, value);
+    }
+
+    public static TVLocator xpath(String value) {
+        return new TVLocator(Selector.XPATH, value);
+    }
+
+    public Selector getSelector() {
         return this.selector;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    private enum Selector {
+        ID("id"),
+        NAME("name"),
+        ACCESSIBILITY_ID("accessibility id"),
+        NS_PREDICATE("predicate string"),
+        CLASS_CHAIN("class chain"),
+        CLASS_NAME("class name"),
+        LINK_TEXT("link text"),
+        XPATH("xpath");
+
+        private String key;
+
+        Selector(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
+
     }
 }
