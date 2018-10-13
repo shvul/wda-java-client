@@ -1,4 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.shvul.wda.client;
+
+import com.github.shvul.wda.client.exception.WebDriverAgentException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,44 +24,18 @@ import java.io.IOException;
 import java.util.Base64;
 
 public interface OutputImageType<T> {
-    OutputImageType<String> BASE64 = new OutputImageType<String>() {
-        public String convertFromBase64Png(String base64Png) {
-            return base64Png;
-        }
-
-        public String toString() {
-            return "OutputType.BASE64";
-        }
-    };
-    OutputImageType<byte[]> BYTES = new OutputImageType<byte[]>() {
-        public byte[] convertFromBase64Png(String base64Png) {
-            return Base64.getMimeDecoder().decode(base64Png);
-        }
-
-        public String toString() {
-            return "OutputType.BYTES";
-        }
-    };
-    OutputImageType<File> FILE = new OutputImageType<File>() {
-        public File convertFromBase64Png(String base64Png) {
-            return this.save(BYTES.convertFromBase64Png(base64Png));
-        }
-
-        private File save(byte[] data) {
-            try {
-                File tmpFile = File.createTempFile("screenshot", ".png");
-                tmpFile.deleteOnExit();
-                try(FileOutputStream stream = new FileOutputStream(tmpFile)) {
-                    stream.write(data);
-                }
-                return tmpFile;
-            } catch (IOException e) {
-                throw new WebDriverAgentException(e);
+    OutputImageType<String> BASE64 = base64Png -> base64Png;
+    OutputImageType<byte[]> BYTES = base64Png -> Base64.getMimeDecoder().decode(base64Png);
+    OutputImageType<File> FILE = base64Png -> {
+        try {
+            File tmpFile = File.createTempFile("screenshot", ".png");
+            tmpFile.deleteOnExit();
+            try(FileOutputStream stream = new FileOutputStream(tmpFile)) {
+                stream.write(BYTES.convertFromBase64Png(base64Png));
             }
-        }
-
-        public String toString() {
-            return "OutputType.FILE";
+            return tmpFile;
+        } catch (IOException e) {
+            throw new WebDriverAgentException(e);
         }
     };
 
