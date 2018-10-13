@@ -1,17 +1,33 @@
-package com.github.shvul.wda.client;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.github.shvul.wda.client.element;
+
+import com.github.shvul.wda.client.CommandExecutable;
+import com.github.shvul.wda.client.Screenshotable;
+import com.github.shvul.wda.client.exception.WebDriverAgentException;
 
 import java.awt.Rectangle;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.List;
 
-public interface TVElement extends Screenshotable {
+public interface TVElement extends Screenshotable, CommandExecutable {
     /**
-     * Select this element. If this causes a new page to load, you
-     * should discard all references to this element and any further
-     * operations performed on this element will throw a
-     * WebDriverAgentException.
-     * <p>
+     * Select this element.
      * <p>
      * Selection mechanism is closely connected with {@link #focuse()} and is invoked before selection execution.
      *
@@ -76,7 +92,7 @@ public interface TVElement extends Screenshotable {
 
     /**
      * Determine whether or not this element is focused or not.
-     *
+     * <p>
      * Note that there is only one focused element at once during tv application running.
      *
      * @return True if the element is focused, false otherwise.
@@ -92,30 +108,23 @@ public interface TVElement extends Screenshotable {
 
     /**
      * Find all elements within the current page using the given mechanism.
-     * This method is affected by the 'implicit wait' times in force at the time of execution. When
-     * implicitly waiting, this method will return as soon as there are more than 0 items in the
-     * found collection, or will return an empty list if the timeout is reached.
      *
      * @param locator The locating mechanism to use
      * @return A list of all {@link TVElement}s, or an empty list if nothing matches
-     * @see com.github.shvul.wda.client.TVLocator
+     * @see TVLocator
      */
     <T extends TVElement> List<T> findElements(TVLocator locator);
 
     /**
      * Find the first {@link TVElement} using the given method.
-     * This method is affected by the 'implicit wait' times in force at the time of execution.
      * The findElement(..) invocation will return a matching row, or try again repeatedly until
      * the configured timeout is reached.
-     *
-     * findElement should not be used to look for non-present elements, use {@link #findElements(TVLocator)}
-     * and assert zero length response instead.
      *
      * @param locator The locating mechanism
      * @return The first matching element on the current page
      * @throws WebDriverAgentException If no matching elements are found
-     * @see com.github.shvul.wda.client.TVLocator
-     * @see com.github.shvul.wda.client.WebDriverAgentException
+     * @see TVLocator
+     * @see WebDriverAgentException
      */
     <T extends TVElement> T findElement(TVLocator locator);
 
