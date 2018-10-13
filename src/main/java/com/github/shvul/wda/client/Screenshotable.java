@@ -7,5 +7,5 @@ public interface Screenshotable {
      *
      * @see com.github.shvul.wda.client.OutputImageType
      */
-    <X> X getScreenshotAs(OutputImageType<X> outputType);
+    <T> T getScreenshot(OutputImageType<T> outputType);
 }
