@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.shvul.wda.client;
+package com.github.shvul.wda.client.driver;
 
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 

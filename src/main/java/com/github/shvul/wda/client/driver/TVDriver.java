@@ -16,8 +16,6 @@
 
 package com.github.shvul.wda.client.driver;
 
-import com.github.shvul.wda.client.CommandExecutable;
-import com.github.shvul.wda.client.Screenshotable;
 import com.github.shvul.wda.client.element.TVElement;
 import com.github.shvul.wda.client.element.TVLocator;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;

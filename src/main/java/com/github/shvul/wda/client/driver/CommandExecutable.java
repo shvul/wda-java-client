@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.github.shvul.wda.client;
-
+package com.github.shvul.wda.client.driver;
 
 import com.github.shvul.wda.client.remote.RemoteResponse;
+import com.github.shvul.wda.client.remote.WDACommand.Wildcard;
 
 import java.util.Map;
 
@@ -26,17 +26,28 @@ public interface CommandExecutable {
     /**
      * Execute remote command on the WebDriverAgent.
      *
-     * @param command key to be executed.
+     * @param command    key to be executed.
+     * @param wildcards  for the command.
      * @param parameters for the command.
      * @return WebDriverAgent response
      * @see RemoteResponse
      */
-    RemoteResponse execute(String command, Map<String, String> parameters);
+    RemoteResponse execute(String command, Map<Wildcard, String> wildcards, Map<String, ?> parameters);
 
     /**
      * Execute remote command on the WebDriverAgent with no parameters.
      *
-     * @param command key to be executed.
+     * @param command   key to be executed.
+     * @param wildcards for the command.
+     * @return WebDriverAgent response
+     * @see RemoteResponse
+     */
+    RemoteResponse execute(String command, Map<Wildcard, String> wildcards);
+
+    /**
+     * Execute remote command on the WebDriverAgent with no parameters and wildcards.
+     *
+     * @param command   key to be executed.
      * @return WebDriverAgent response
      * @see RemoteResponse
      */

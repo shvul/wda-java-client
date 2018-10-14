@@ -16,8 +16,8 @@
 
 package com.github.shvul.wda.client.element;
 
-import com.github.shvul.wda.client.CommandExecutable;
-import com.github.shvul.wda.client.Screenshotable;
+import com.github.shvul.wda.client.driver.CommandExecutable;
+import com.github.shvul.wda.client.driver.Screenshotable;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 
 import java.awt.Rectangle;
