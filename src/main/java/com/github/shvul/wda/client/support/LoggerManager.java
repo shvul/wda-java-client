@@ -30,6 +30,10 @@ public final class LoggerManager {
         LOGGER.info(message);
     }
 
+    public static void debug(String message) {
+        LOGGER.debug(message);
+    }
+
     public static void warn(String message) {
         LOGGER.warn(message);
     }
