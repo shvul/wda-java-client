@@ -30,7 +30,11 @@ public class DriverCapabilities {
         DEVICE_NAME("deviceName"),
         DEVICE_ID("deviceId"),
         OS_VERSION("osVersion"),
-        WDA_URL("wdaUrl");
+        WDA_URL("wdaUrl"),
+        BUNDLE_ID("bundleId"),
+        APP_PATH("app"),
+        LANGUAGE("language"),
+        LOCALE("locale");
 
         private String key;
 
@@ -75,6 +79,22 @@ public class DriverCapabilities {
 
     public void setOsVersion(String value) {
         this.setCapability(Key.OS_VERSION, value);
+    }
+
+    public void setAppPath(String value) {
+        this.setCapability(Key.APP_PATH, value);
+    }
+
+    public void setBundleId(String value) {
+        this.setCapability(Key.BUNDLE_ID, value);
+    }
+
+    public void setLanguage(String value) {
+        this.setCapability(Key.LANGUAGE, value);
+    }
+
+    public void setLocale(String value) {
+        this.setCapability(Key.LOCALE, value);
     }
 
     public String getCapability(String name) {

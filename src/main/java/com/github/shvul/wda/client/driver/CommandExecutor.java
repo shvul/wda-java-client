@@ -21,7 +21,7 @@ import com.github.shvul.wda.client.remote.WDACommand.Wildcard;
 
 import java.util.Map;
 
-public interface CommandExecutable {
+public interface CommandExecutor {
 
     /**
      * Execute remote command on the WebDriverAgent.
