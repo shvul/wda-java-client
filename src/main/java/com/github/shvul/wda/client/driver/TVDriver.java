@@ -23,7 +23,7 @@ import com.github.shvul.wda.client.exception.WebDriverAgentException;
 import java.awt.Dimension;
 import java.util.List;
 
-public interface TVDriver extends Screenshotable, CommandExecutable {
+public interface TVDriver extends Screenshotable, CommandExecutor {
 
     /**
      * Find all elements within the current page using the given mechanism.
@@ -32,7 +32,7 @@ public interface TVDriver extends Screenshotable, CommandExecutable {
      * @return A list of all {@link TVElement}s, or an empty list if nothing matches
      * @see TVLocator
      */
-    <T extends TVElement> List<T> findElements(TVLocator locator);
+    List<TVElement> findElements(TVLocator locator);
 
     /**
      * Find the first {@link TVElement} using the given method.
@@ -45,7 +45,21 @@ public interface TVDriver extends Screenshotable, CommandExecutable {
      * @see TVLocator
      * @see WebDriverAgentException
      */
-    <T extends TVElement> T findElement(TVLocator locator);
+    TVElement findElement(TVLocator locator);
+
+    /**
+     * Returns {@link TVElement} with focuse square.
+     *
+     * @return focused element
+     */
+    TVElement focused();
+
+    /**
+     * Use this method to simulate typing into tv keyboard.
+     *
+     * @param keysToSend character sequence to send to the element
+     */
+    void sendKeys(CharSequence... keysToSend);
 
     /**
      * Get the source of the last loaded application page.
@@ -76,20 +90,7 @@ public interface TVDriver extends Screenshotable, CommandExecutable {
     void removeApp(String bundleId);
 
     /**
-     * Launch an app on the tv device.
-     *
-     * @param bundleId bundle id of the app to launch.
-     */
-    void launchApp(String bundleId);
-
-    /**
-     * Close the app which was provided in the capabilities at session creation
-     * and quits the session.
-     */
-    void closeApp();
-
-    /**
-     * Quits this driver, closing running app.
+     * Quits the session.
      */
     void quit();
 
@@ -101,48 +102,93 @@ public interface TVDriver extends Screenshotable, CommandExecutable {
     RemoteControl getRemoteControl();
 
     /**
+     * Returns {@link RemoteControl} for tv device
+     *
+     * @return the remote control
+     */
+    Alert getAlert();
+
+    /**
      * Remote control commands
      */
     interface RemoteControl {
 
         /**
-         * Press up button on the Remote Control
+         * Press up button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void up();
+        void up(int... duration);
 
         /**
-         * Press down button on the Remote Control
+         * Press down button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void down();
+        void down(int... duration);
 
         /**
-         * Press left button on the Remote Control
+         * Press left button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void left();
+        void left(int... duration);
 
         /**
-         * Press right button on the Remote Control
+         * Press right button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void right();
+        void right(int... duration);
 
         /**
-         * Press select button on the Remote Control
+         * Press select button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void select();
+        void select(int... duration);
 
         /**
-         * Press menu button on the Remote Control
+         * Press menu button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void menu();
+        void menu(int... duration);
 
         /**
-         * Press play/pause button on the Remote Control
+         * Press play/pause button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void playPause();
+        void playPause(int... duration);
 
         /**
-         * Press home button on the Remote Control
+         * Press home button on the Remote Control.
+         *
+         * @param duration of press in seconds. Optional parameter. Default 0.
          */
-        void home();
+        void home(int... duration);
+    }
+
+    /**
+     * Alert commands
+     */
+    interface Alert {
+
+        /**
+         * Dismiss currently open Alert.
+         */
+        void dismiss();
+
+        /**
+         * Accept currently open Alert.
+         */
+        void accept();
+
+        /**
+         * Extracts text from Alert element.
+         * @return alert text
+         */
+        String getText();
     }
 }
