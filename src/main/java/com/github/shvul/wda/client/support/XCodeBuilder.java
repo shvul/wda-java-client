@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.shvul.wda.client.remote;
+package com.github.shvul.wda.client.support;
 
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
-import com.github.shvul.wda.client.support.CommandLineExecutor;
-import com.github.shvul.wda.client.support.LoggerManager;
 
 import java.util.ArrayList;
 import java.util.List;
