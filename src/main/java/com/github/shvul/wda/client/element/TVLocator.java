@@ -66,7 +66,7 @@ public class TVLocator {
         return this.value;
     }
 
-    private enum Selector {
+    public enum Selector {
         ID("id"),
         NAME("name"),
         ACCESSIBILITY_ID("accessibility id"),
