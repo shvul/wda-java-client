@@ -16,7 +16,7 @@
 
 package com.github.shvul.wda.client.element;
 
-import com.github.shvul.wda.client.driver.CommandExecutable;
+import com.github.shvul.wda.client.driver.CommandExecutor;
 import com.github.shvul.wda.client.driver.Screenshotable;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 
@@ -25,7 +25,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.List;
 
-public interface TVElement extends Screenshotable, CommandExecutable {
+public interface TVElement extends Screenshotable, CommandExecutor {
     /**
      * Select this element.
      * <p>
@@ -48,11 +48,11 @@ public interface TVElement extends Screenshotable, CommandExecutable {
     void focuse();
 
     /**
-     * Use this method to simulate typing into an element, which may set its value.
+     * This method sets the new value of the attribute "value".
      *
-     * @param keysToSend character sequence to send to the element
+     * @param value is the new value which should be set
      */
-    void sendKeys(CharSequence... keysToSend);
+    void setValue(String value);
 
     /**
      * If this element is a text entry element, this will clear the value. Has no effect on other
@@ -73,14 +73,6 @@ public interface TVElement extends Screenshotable, CommandExecutable {
      * @return The attribute/property's current value or null if the value is not set.
      */
     String getAttribute(String name);
-
-    /**
-     * Determine whether or not this element is selected or not. This operation only applies to input
-     * elements such as checkboxes, options in a select and radio buttons.
-     *
-     * @return True if the element is currently selected or checked, false otherwise.
-     */
-    boolean isSelected();
 
     /**
      * Is the element currently enabled or not? This will generally return true for everything but
@@ -113,7 +105,7 @@ public interface TVElement extends Screenshotable, CommandExecutable {
      * @return A list of all {@link TVElement}s, or an empty list if nothing matches
      * @see TVLocator
      */
-    <T extends TVElement> List<T> findElements(TVLocator locator);
+    List<TVElement> findElements(TVLocator locator);
 
     /**
      * Find the first {@link TVElement} using the given method.
@@ -126,7 +118,7 @@ public interface TVElement extends Screenshotable, CommandExecutable {
      * @see TVLocator
      * @see WebDriverAgentException
      */
-    <T extends TVElement> T findElement(TVLocator locator);
+    TVElement findElement(TVLocator locator);
 
     /**
      * Is this element displayed or not? This method avoids the problem of having to parse an
