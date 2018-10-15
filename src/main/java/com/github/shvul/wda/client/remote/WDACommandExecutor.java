@@ -16,11 +16,12 @@
 
 package com.github.shvul.wda.client.remote;
 
-import com.github.shvul.wda.client.driver.CommandExecutable;
+import com.github.shvul.wda.client.driver.CommandExecutor;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 import com.github.shvul.wda.client.support.HttpService;
 import com.github.shvul.wda.client.support.JsonConverter;
 import com.github.shvul.wda.client.remote.WDACommand.Wildcard;
+import com.github.shvul.wda.client.support.LoggerManager;
 
 import java.net.URL;
 import java.util.EnumMap;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class WDACommandExecutor implements CommandExecutable {
+public class WDACommandExecutor implements CommandExecutor {
 
     private URL wdaUrl;
 
@@ -38,8 +39,10 @@ public class WDACommandExecutor implements CommandExecutable {
 
     @Override
     public RemoteResponse execute(String command, Map<Wildcard, String> wildcards, Map<String, ?> parameters) {
+        LoggerManager.getLogger().info(String.format("Execute command: %s with wildcards: %s and parameters: %s",
+                command, wildcards, parameters));
         RemoteCommandInfo commandInfo = getCommandInfo(command);
-        String url = wdaUrl.getPath() + commandInfo.getUrl();
+        String url = wdaUrl.toString() + commandInfo.getUrl();
 
         for (Wildcard wildcard : Wildcard.values()) {
             String value = wildcards.get(wildcard);
@@ -66,12 +69,10 @@ public class WDACommandExecutor implements CommandExecutable {
         if (response.getStatus() != RemoteDriverStatus.NO_ERROR.getStatus()) {
             RemoteDriverStatus remoteStatus = RemoteDriverStatus.getByStatusCode(response.getStatus());
             String message = RemoteDriverStatus.getMessage(remoteStatus);
-            String description = (String) response.getValue();
-            throw new WebDriverAgentException(String.format("%s. Description: %s", message, description));
+            throw new WebDriverAgentException(String.format("%s. Description: %s", message, response.getValue()));
         }
 
         return response;
-
     }
 
     @Override
@@ -85,7 +86,7 @@ public class WDACommandExecutor implements CommandExecutable {
     }
 
     private RemoteCommandInfo getCommandInfo(String command) {
-        return Optional.ofNullable(WDACommand.commands.get(command))
+        return Optional.ofNullable(WDACommand.getCommand(command))
                 .orElseThrow(() -> new WebDriverAgentException("Unable to find command: " + command));
     }
 }
