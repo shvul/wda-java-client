@@ -48,7 +48,7 @@ public class AppleTVDriver implements TVDriver {
         this.capabilities = capabilities;
         this.wdaRunner = new WebDriverAgentRunner(capabilities);
         this.commandExecutor = new WDACommandExecutor(wdaRunner.getWdaUrl());
-        // this.wdaRunner.start();
+        this.wdaRunner.start();
         this.createSession();
     }
 

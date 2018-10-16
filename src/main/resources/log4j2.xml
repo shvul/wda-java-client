@@ -6,9 +6,6 @@
     </Properties>
     <ThresholdFilter level="trace"/>
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-        </Console>
         <File name="File" fileName="${LOG_DIR}/client.log" append="false">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
@@ -16,7 +13,6 @@
     <Loggers>
         <Root level="ALL">
             <Appender-ref ref="File" level="trace"/>
-            <Appender-ref ref="Console" level="trace"/>
         </Root>
     </Loggers>
 </Configuration>
