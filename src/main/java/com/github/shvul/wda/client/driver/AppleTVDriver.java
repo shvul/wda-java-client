@@ -49,8 +49,7 @@ public class AppleTVDriver implements TVDriver {
         this.wdaRunner = new WebDriverAgentRunner(capabilities);
         this.commandExecutor = new WDACommandExecutor(wdaRunner.getWdaUrl());
         // this.wdaRunner.start();
-        // this.createSession();
-        this.sessionId = "6DACF840-6062-4D7D-89D3-0EE76A9D10A3";
+        this.createSession();
     }
 
     @Override
@@ -100,13 +99,40 @@ public class AppleTVDriver implements TVDriver {
     }
 
     @Override
-    public void installApp(String appPath) {
-        new IOSDeploy(capabilities.getCapability(Key.DEVICE_ID)).installApp(appPath);
+    public void installApp(String... appPath) {
+        String path = appPath.length > 0 ? appPath[0] : capabilities.getCapability(Key.APP_PATH);
+        new IOSDeploy(capabilities.getCapability(Key.DEVICE_ID)).installApp(path);
     }
 
     @Override
-    public void removeApp(String bundleId) {
-        new IOSDeploy(capabilities.getCapability(Key.DEVICE_ID)).removeApp(bundleId);
+    public void removeApp(String... bundleId) {
+        String id = bundleId.length > 0 ? bundleId[0] : capabilities.getCapability(Key.BUNDLE_ID);
+        new IOSDeploy(capabilities.getCapability(Key.DEVICE_ID)).removeApp(id);
+    }
+
+    @Override
+    public void launch(String... bundleId) {
+        String id = bundleId.length > 0 ? bundleId[0] : capabilities.getCapability(Key.BUNDLE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Parameter.BUNDLE_ID.getKey(), id);
+        parameters.put(Parameter.ARGUMENTS.getKey(), buildArgs());
+        execute(WDACommand.LAUNCH, new EnumMap<>(Wildcard.class), parameters);
+    }
+
+    @Override
+    public void terminate(String... bundleId) {
+        String id = bundleId.length > 0 ? bundleId[0] : capabilities.getCapability(Key.BUNDLE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Parameter.BUNDLE_ID.getKey(), id);
+        execute(WDACommand.TERMINATE, new EnumMap<>(Wildcard.class), parameters);
+    }
+
+    @Override
+    public void activate(String... bundleId) {
+        String id = bundleId.length > 0 ? bundleId[0] : capabilities.getCapability(Key.BUNDLE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Parameter.BUNDLE_ID.getKey(), id);
+        execute(WDACommand.ACTIVATE, new EnumMap<>(Wildcard.class), parameters);
     }
 
     @Override
@@ -218,12 +244,17 @@ public class AppleTVDriver implements TVDriver {
         }
 
         @Override public String getText() {
-            return (String)execute(WDACommand.GET_ALERT_TEXT).getValue();
+            return (String) execute(WDACommand.GET_ALERT_TEXT).getValue();
         }
     }
 
     private void createSession() {
         String command = WDACommand.NEW_SESSION;
+
+        Optional.ofNullable(capabilities.getCapability(Key.APP_PATH)).ifPresent(path -> {
+            new IOSDeploy(capabilities.getCapability(Key.DEVICE_ID)).installApp(path);
+        });
+
         RemoteResponse response = execute(command, new EnumMap<>(Wildcard.class), buildDesiredCapabilities());
         this.sessionId = response.getSessionId();
     }
@@ -231,8 +262,19 @@ public class AppleTVDriver implements TVDriver {
     private Map<String, Object> buildDesiredCapabilities() {
         Map<String, Object> desiredWrapper = new HashMap<>();
         Map<String, Object> desiredCaps = new HashMap<>();
-        Map<String, Object> args = new HashMap<>();
+        desiredCaps.put(Parameter.ARGUMENTS.getKey(), buildArgs());
 
+        Optional.ofNullable(capabilities.getCapability(Key.BUNDLE_ID)).ifPresent(cap -> {
+            desiredCaps.put(Key.BUNDLE_ID.getKey(), cap);
+        });
+
+        desiredWrapper.put("desiredCapabilities", desiredCaps);
+
+        return desiredWrapper;
+    }
+
+    private Map<String, Object> buildArgs() {
+        Map<String, Object> args = new HashMap<>();
         Optional.ofNullable(capabilities.getCapability(Key.LANGUAGE)).ifPresent(cap -> {
             args.put("-AppleLanguages", cap);
             args.put("-NSLanguages", cap);
@@ -241,19 +283,6 @@ public class AppleTVDriver implements TVDriver {
         Optional.ofNullable(capabilities.getCapability(Key.LOCALE)).ifPresent(cap -> {
             args.put("-AppleLocale", cap);
         });
-
-        desiredCaps.put("arguments", args);
-
-        Optional.ofNullable(capabilities.getCapability(Key.BUNDLE_ID)).ifPresent(cap -> {
-            desiredCaps.put(Key.BUNDLE_ID.getKey(), cap);
-        });
-
-        Optional.ofNullable(capabilities.getCapability(Key.APP_PATH)).ifPresent(cap -> {
-            desiredCaps.put(Key.APP_PATH.getKey(), cap);
-        });
-
-        desiredWrapper.put("desiredCapabilities", desiredCaps);
-
-        return desiredWrapper;
+        return args;
     }
 }

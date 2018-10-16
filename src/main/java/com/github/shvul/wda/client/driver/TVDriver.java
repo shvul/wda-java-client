@@ -77,17 +77,43 @@ public interface TVDriver extends Screenshotable, CommandExecutor {
 
     /**
      * Install an app on the tv device.
+     * If param is not present, capabilities value would be taken.
      *
      * @param appPath path to app to install.
      */
-    void installApp(String appPath);
+    void installApp(String... appPath);
 
     /**
      * Remove an app on the tv device.
+     * If param is not present, capabilities value would be taken.
      *
      * @param bundleId bundle id of the app to remove.
      */
-    void removeApp(String bundleId);
+    void removeApp(String... bundleId);
+
+    /**
+     * Launch app on the tv device.
+     * If param is not present, capabilities value would be taken.
+     *
+     * @param bundleId bundle id of the app to launch.
+     */
+    void launch(String... bundleId);
+
+    /**
+     * Terminate app on the tv device.
+     * If param is not present, capabilities value would be taken.
+     *
+     * @param bundleId bundle id of the app to launch.
+     */
+    void terminate(String... bundleId);
+
+    /**
+     * Activate app on the tv device.
+     * If param is not present, capabilities value would be taken.
+     *
+     * @param bundleId bundle id of the app to launch.
+     */
+    void activate(String... bundleId);
 
     /**
      * Quits the session.
@@ -187,6 +213,7 @@ public interface TVDriver extends Screenshotable, CommandExecutor {
 
         /**
          * Extracts text from Alert element.
+         *
          * @return alert text
          */
         String getText();
