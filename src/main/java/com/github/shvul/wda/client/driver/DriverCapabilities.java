@@ -30,7 +30,7 @@ public class DriverCapabilities {
         DEVICE_NAME("deviceName"),
         DEVICE_ID("deviceId"),
         OS_VERSION("osVersion"),
-        WDA_URL("wdaUrl"),
+        DEVICE_IP("deviceIp"),
         BUNDLE_ID("bundleId"),
         APP_PATH("app"),
         LANGUAGE("language"),
@@ -61,13 +61,18 @@ public class DriverCapabilities {
         this.addToCapabilities(name, value);
     }
 
-    public void setPlatfrom(String value) {
+    public void setPlatform(String value) {
         this.setCapability(Key.PLATFORM, value);
     }
 
     public void setWdaPath(String value) {
         this.setCapability(Key.WDA_PATH, value);
     }
+
+    public void setDeviceIp(String value) {
+        this.setCapability(Key.DEVICE_IP, value);
+    }
+
 
     public void setDeviceName(String value) {
         this.setCapability(Key.DEVICE_NAME, value);
