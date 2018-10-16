@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -73,8 +74,8 @@ public class WebDriverAgentRunner {
 
     public URL getWdaUrl() {
 
-        String urlStr = Optional.ofNullable(capabilities.getCapability(DriverCapabilities.Key.WDA_URL))
-                .map(url -> String.format("%s:%s", url, WDA_AGENT_PORT))
+        String urlStr = Optional.ofNullable(capabilities.getCapability(DriverCapabilities.Key.DEVICE_IP))
+                .map(url -> String.format("http://%s:%s", url, WDA_AGENT_PORT))
                 .orElse(String.format("%s:%s", WDA_BASE_URL, WDA_AGENT_PORT));
         try {
             return new URL(urlStr);
@@ -95,7 +96,7 @@ public class WebDriverAgentRunner {
                         if (connection.getResponseCode() == HttpStatus.SC_OK) {
                             return connection.getResponseCode();
                         }
-                    } catch (ConnectException e) {
+                    } catch (ConnectException | SocketTimeoutException e) {
                         LoggerManager.debug(e.getMessage());
                     } finally {
                         if (connection != null) {
