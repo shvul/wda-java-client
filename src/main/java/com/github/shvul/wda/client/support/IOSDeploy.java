@@ -67,9 +67,7 @@ public class IOSDeploy {
         ID("--id"),
         BUNDLE_ID("--bundle_id"),
         BUNDLE("--bundle"),
-        LAUNCH("--justlaunch"),
         UNINSTALL_ONLY("--uninstall_only"),
-        UNINSTALL("--uninstall"),
         EXISTS("--exists");
 
         private String key;
