@@ -51,6 +51,9 @@ public class WDACommand {
     public static final String IS_ELEMENT_DISPLAYED;
     public static final String GET_ELEMENT_RECT;
     public static final String GET_FOCUSED_ELEMENT;
+    public static final String LAUNCH;
+    public static final String TERMINATE;
+    public static final String ACTIVATE;
 
     public static final Map<String, RemoteCommandInfo> commands;
 
@@ -83,6 +86,9 @@ public class WDACommand {
         IS_ELEMENT_DISPLAYED = "isElementDisplayed";
         GET_ELEMENT_RECT = "getElementRect";
         GET_FOCUSED_ELEMENT = "getFocusedElement";
+        LAUNCH = "launchApp";
+        TERMINATE = "terminateApp";
+        ACTIVATE = "activateApp";
 
         commands = new HashMap<>();
         commands.put(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
@@ -113,6 +119,9 @@ public class WDACommand {
         commands.put(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:uuid/displayed"));
         commands.put(GET_ELEMENT_RECT, get("/session/:sessionId/element/:uuid/rect"));
         commands.put(GET_FOCUSED_ELEMENT, get("/wda/element/focused"));
+        commands.put(LAUNCH, post("/session/:sessionId/wda/apps/launch"));
+        commands.put(TERMINATE, post("/session/:sessionId/wda/apps/terminate"));
+        commands.put(ACTIVATE, post("/session/:sessionId/wda/apps/activate"));
     }
 
     public enum Wildcard {
@@ -137,6 +146,8 @@ public class WDACommand {
 
         USING("using"),
         VALUE("value"),
+        BUNDLE_ID("bundleId"),
+        ARGUMENTS("arguments"),
         FREQUENCY("frequency");
 
         private String key;
