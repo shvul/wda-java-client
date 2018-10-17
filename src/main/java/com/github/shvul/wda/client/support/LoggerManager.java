@@ -16,11 +16,19 @@
 
 package com.github.shvul.wda.client.support;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class LoggerManager {
-    private static final Logger LOGGER = LogManager.getLogger("WDA Client");
+    private static final String WDA_LOGGER_NAME = "WDA Client";
+    private static final String CONSOLE_APPENDER_NAME = "Console";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WDA_LOGGER_NAME);
 
     public static Logger getLogger() {
         return LOGGER;
@@ -42,7 +50,19 @@ public final class LoggerManager {
         LOGGER.error(message);
     }
 
+    public static void error(Throwable throwable) {
+        LOGGER.error(throwable.getMessage(), throwable);
+    }
+
     public static void error(String message, Throwable throwable) {
         LOGGER.error(message, throwable);
+    }
+
+    public static void enableConsoleLogging() {
+        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        Configuration configuration = loggerContext.getConfiguration();
+        LoggerConfig wdaLogger = configuration.getLoggerConfig(WDA_LOGGER_NAME);
+        Appender appender = configuration.getAppender(CONSOLE_APPENDER_NAME);
+        wdaLogger.addAppender(appender, Level.ALL, null);
     }
 }

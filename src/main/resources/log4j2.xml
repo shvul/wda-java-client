@@ -6,7 +6,10 @@
     </Properties>
     <ThresholdFilter level="trace"/>
     <Appenders>
-        <File name="File" fileName="${LOG_DIR}/client.log" append="false">
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <File name="File" fileName="${LOG_DIR}/wda-client.log" append="false">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
     </Appenders>
