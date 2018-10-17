@@ -4,7 +4,7 @@ WebDriverAgent Java Client for tvOS automation
 ## Environment
 
 * A Mac computer with macOS 10.12 or higher is required.
-* Xcode 9 or higher is required.
+* Xcode 9.3 or higher is required.
 * Command Line Tools for Xcode are required.
 
 ## External dependencies
@@ -59,6 +59,8 @@ Switch to application-commands branch to use application install/activate/launch
 ```
 git checkout -b application-commands origin/application-commands
 ```
+
+Open xcode project and sign `WebDriverAgentRunner_tvOS` target under your provisioning profile.
 
 ## Capabilities
 
