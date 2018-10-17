@@ -18,6 +18,7 @@ package com.github.shvul.wda.client.remote;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class RemoteCommandInfo {
 
@@ -65,9 +66,9 @@ public class RemoteCommandInfo {
 
     @Override
     public String toString() {
-        return "RemoteCommandInfo{" +
-                "url='" + url + '\'' +
-                ", method=" + method +
-                '}';
+        return new ToStringBuilder(this)
+                .append("url", url)
+                .append("method", method)
+                .toString();
     }
 }

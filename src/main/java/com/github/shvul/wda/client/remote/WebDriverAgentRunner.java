@@ -38,11 +38,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class WebDriverAgentRunner {
-    private static final String WDA_BUNDLE_ID = "com.apple.test.WebDriverAgentRunner_tvOS-Runner";
     private static final String WDA_BASE_URL = "http://localhost";
     private static final String WDA_STATE_FIELD = "state";
     private static final int WDA_AGENT_PORT = 8100;
-    private static final int WDA_LAUNCH_TIMEOUT = 60;
+    private static final int WDA_LAUNCH_TIMEOUT = 120;
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private DriverCapabilities capabilities;
     private CommandExecutor commandExecutor;
@@ -54,14 +53,21 @@ public class WebDriverAgentRunner {
     }
 
     public void start() {
-        LoggerManager.info("Start WebDriverAgent.");
-        wdaProcess = new XCodeBuilder()
-                .setWdaPath(capabilities.getCapability(DriverCapabilities.Key.WDA_PATH))
-                .setPlatform(capabilities.getCapability(DriverCapabilities.Key.PLATFORM))
-                .setDeviceName(capabilities.getCapability(DriverCapabilities.Key.DEVICE_NAME))
-                .setDeviceId(capabilities.getCapability(DriverCapabilities.Key.DEVICE_ID))
-                .setOsVersion(capabilities.getCapability(DriverCapabilities.Key.OS_VERSION))
-                .build();
+        boolean startNewProcess = Optional.ofNullable(capabilities.getCapability(DriverCapabilities.Key.PREBUILT_WDA))
+                .map(k -> !Boolean.valueOf(k))
+                .orElse(true);
+        if (startNewProcess) {
+            LoggerManager.info("Start WebDriverAgent.");
+            wdaProcess = new XCodeBuilder()
+                    .setWdaPath(capabilities.getCapability(DriverCapabilities.Key.WDA_PATH))
+                    .setPlatform(capabilities.getCapability(DriverCapabilities.Key.PLATFORM))
+                    .setDeviceName(capabilities.getCapability(DriverCapabilities.Key.DEVICE_NAME))
+                    .setDeviceId(capabilities.getCapability(DriverCapabilities.Key.DEVICE_ID))
+                    .setOsVersion(capabilities.getCapability(DriverCapabilities.Key.OS_VERSION))
+                    .build();
+        } else {
+            LoggerManager.info("Use existing WebDriverAgent process.");
+        }
 
         waitForReachability(getWdaUrl(), WDA_LAUNCH_TIMEOUT);
         checkStatus();
@@ -85,7 +91,7 @@ public class WebDriverAgentRunner {
     }
 
     private void waitForReachability(URL url, int timeout) {
-        LoggerManager.debug("Wait for WebDriverAgent reachability.");
+        LoggerManager.info("Wait for WebDriverAgent reachability.");
         try {
             SimpleTimeLimiter.create(executorService).callWithTimeout(() -> {
                 HttpURLConnection connection = null;
@@ -108,14 +114,15 @@ public class WebDriverAgentRunner {
                     sleepMillis = sleepMillis >= 320L ? sleepMillis : sleepMillis * 2L;
                 }
             }, timeout, TimeUnit.SECONDS);
+            LoggerManager.info("WebDriverAgent is reachable.");
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             throw new WebDriverAgentException(String.format("WDA is not reachable in %d seconds.", timeout), e);
         }
     }
 
     private void checkStatus() {
+        LoggerManager.info("Check WebDriverAgent status.");
         RemoteResponse response = commandExecutor.execute(WDACommand.STATUS);
-
         String state = (String) response.getValueAsMap().get(WDA_STATE_FIELD);
 
         if (!state.equals("success")) {

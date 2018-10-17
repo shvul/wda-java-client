@@ -21,6 +21,7 @@ import com.github.shvul.wda.client.element.AppleTVElement;
 import com.github.shvul.wda.client.element.TVElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -166,12 +167,12 @@ public class RemoteResponse {
 
     @Override
     public String toString() {
-        return "RemoteResponse{" +
-                "value=" + value +
-                ", sessionId='" + sessionId + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                ", state='" + state + '\'' +
-                '}';
+        return new ToStringBuilder(this)
+                .append("value", value)
+                .append("sessionId", sessionId)
+                .append("id", id)
+                .append("status", status)
+                .append("state", state)
+                .toString();
     }
 }

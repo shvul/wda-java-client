@@ -39,7 +39,7 @@ public class WDACommandExecutor implements CommandExecutor {
 
     @Override
     public RemoteResponse execute(String command, Map<Wildcard, String> wildcards, Map<String, ?> parameters) {
-        LoggerManager.getLogger().info(String.format("Execute command: %s with wildcards: %s and parameters: %s",
+        LoggerManager.info(String.format("Execute command: %s with wildcards: %s and parameters: %s",
                 command, wildcards, parameters));
         RemoteCommandInfo commandInfo = getCommandInfo(command);
         String url = wdaUrl.toString() + commandInfo.getUrl();
