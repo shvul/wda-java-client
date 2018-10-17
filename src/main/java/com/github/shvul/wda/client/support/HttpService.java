@@ -95,7 +95,7 @@ public class HttpService {
             }
             result = content.toString();
         } catch (IOException e) {
-            LoggerManager.getLogger().error(e);
+            LoggerManager.error(e);
         }
         return result;
     }

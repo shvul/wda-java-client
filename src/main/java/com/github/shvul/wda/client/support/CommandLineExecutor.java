@@ -57,7 +57,7 @@ public class CommandLineExecutor {
         }
     }
 
-    public static String getOutput(Process process) throws IOException {
+    private static String getOutput(Process process) throws IOException {
         String error = getOutput(process.getErrorStream());
         if (error.isEmpty()) {
             return getOutput(process.getInputStream());
@@ -65,7 +65,7 @@ public class CommandLineExecutor {
         return error;
     }
 
-    public static String getOutput(InputStream input) throws IOException {
+    private static String getOutput(InputStream input) throws IOException {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
             while (buffer.ready()) {

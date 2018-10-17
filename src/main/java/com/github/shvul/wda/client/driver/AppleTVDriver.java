@@ -26,6 +26,7 @@ import com.github.shvul.wda.client.remote.WDACommand.Wildcard;
 import com.github.shvul.wda.client.remote.WDACommandExecutor;
 import com.github.shvul.wda.client.remote.WebDriverAgentRunner;
 import com.github.shvul.wda.client.support.IOSDeploy;
+import com.github.shvul.wda.client.support.LoggerManager;
 import com.google.common.collect.ImmutableMap;
 
 import java.awt.Dimension;
@@ -137,6 +138,7 @@ public class AppleTVDriver implements TVDriver {
 
     @Override
     public void quit() {
+        sessionId = null;
         wdaRunner.stop();
     }
 
@@ -249,6 +251,8 @@ public class AppleTVDriver implements TVDriver {
     }
 
     private void createSession() {
+        LoggerManager.info("Starting new WebDriverAgent session.");
+        LoggerManager.debug("Capabilities: " + capabilities.toString());
         String command = WDACommand.NEW_SESSION;
 
         Optional.ofNullable(capabilities.getCapability(Key.APP_PATH)).ifPresent(path -> {
