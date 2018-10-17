@@ -62,20 +62,23 @@ git checkout -b application-commands origin/application-commands
 
 ## Capabilities
 
-Differences noted here
+These capabilities are available for java client configuration:
 
 |Capability|Description|Values|
-|`app`|The absolute local path or remote http URL to a `.ipa` file| e.g., `/path/to/my.ipa`|
-|`bundleId`|Bundle ID of the app under test|e.g., `com.facebook.wda.integrationApp`|
-|`udid`|Unique device identifier of the connected physical device|e.g., `a248bf31a45b0153e088d05d66e12dc9316d117d`|
-|`deviceIp`|Ip of the physical device. It should be reachable from you network|e.g., `192.168.0.1`|
-|`deviceName`|The kind of mobile device or emulator to use|`Apple TV`, `Apple TV 4K`, `Apple TV 4K (at 1080p)`|
-|`language`|(Sim-only) Language to set for the simulator|e.g., `eng`|
-|`locale`|(Sim-only) Locale to set for the simulator|e.g., `eng_us`|
-|`osVersion`|(Sim-only) tvOS OS version|e.g., `12.0`|
-|`platform`|Which tvOS platform to use|`tvOS`, `tvOS Simulator`|
+|----------|-----------|------|
+|`app`|The absolute local path to a `.ipa` file to install.| e.g., `/path/to/my.ipa`|
+|`bundleId`|Bundle ID of the app under test. `*`|e.g., `com.facebook.wda.integrationApp`|
+|`udid`|Unique device identifier of the connected physical device. Capability is required for app install/remove.|e.g., `a248bf31a45b0153e088d05d66e12dc9316d117d`|
+|`deviceIp`|Ip of the physical device. It should be reachable from you network. Capability is required for real devices.|e.g., `192.168.0.1`|
+|`deviceName`|The kind of mobile device or emulator to use.|`Apple TV`, `Apple TV 4K`, `Apple TV 4K (at 1080p)`|
+|`language`|(Sim-only) Language to set for the simulator.|e.g., `eng`|
+|`locale`|(Sim-only) Locale to set for the simulator.|e.g., `eng_us`|
+|`osVersion`|(Sim-only) tvOS OS version.|e.g., `12.0`|
+|`platform`|Which tvOS platform to use. `*`|`tvOS`, `tvOS Simulator`|
 |`usePrebuiltWDA`|Skips the build phase of running the WDA app. Building is then the responsibility of the user. Defaults to `false`.|e.g., `true`|
-|`wdaPath`|Path to WebDriverAgent xcode project|e.g., `path/to/WebDriverAgent/WebDriverAgent.xcodeproj`|
+|`wdaPath`|Path to WebDriverAgent xcode project. `*`|e.g., `path/to/WebDriverAgent/WebDriverAgent.xcodeproj`|
+
+`*` - required capabilities
 
 ## Usage
 
