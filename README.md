@@ -44,7 +44,7 @@ Add wda-java-client dependency:
 <dependency>
     <groupId>com.github.shvul</groupId>
     <artifactId>wda-java-client</artifactId>
-    <version>1.0.0-beta-1</version>
+    <version>1.0.0-beta-2</version>
 </dependency>
 ```
 Download [WebDriverAgent](https://github.com/shvul/WebDriverAgent) with tvOS support:
