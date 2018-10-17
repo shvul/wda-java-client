@@ -17,6 +17,9 @@
 package com.github.shvul.wda.client.driver;
 
 import com.github.shvul.wda.client.exception.CapabilityIsNotFoundException;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,16 +28,17 @@ import java.util.Map;
 public class DriverCapabilities {
 
     public enum Key {
-        PLATFORM("platform"),
-        WDA_PATH("wdaPath"),
-        DEVICE_NAME("deviceName"),
-        DEVICE_ID("deviceId"),
-        OS_VERSION("osVersion"),
-        DEVICE_IP("deviceIp"),
-        BUNDLE_ID("bundleId"),
         APP_PATH("app"),
+        BUNDLE_ID("bundleId"),
+        DEVICE_ID("deviceId"),
+        DEVICE_IP("deviceIp"),
+        DEVICE_NAME("deviceName"),
         LANGUAGE("language"),
-        LOCALE("locale");
+        LOCALE("locale"),
+        OS_VERSION("osVersion"),
+        PLATFORM("platform"),
+        PREBUILT_WDA("usePrebuiltWDA"),
+        WDA_PATH("wdaPath");
 
         private String key;
 
@@ -73,7 +77,6 @@ public class DriverCapabilities {
         this.setCapability(Key.DEVICE_IP, value);
     }
 
-
     public void setDeviceName(String value) {
         this.setCapability(Key.DEVICE_NAME, value);
     }
@@ -102,6 +105,10 @@ public class DriverCapabilities {
         this.setCapability(Key.LOCALE, value);
     }
 
+    public void usePrebuiltWda(boolean value) {
+        this.setCapability(Key.PLATFORM, String.valueOf(value));
+    }
+
     public String getCapability(String name) {
         return capabilities.get(name);
     }
@@ -112,9 +119,38 @@ public class DriverCapabilities {
 
     private void addToCapabilities(String name, Object value) {
         if (Arrays.stream(Key.values()).map(Key::getKey).anyMatch(k -> k.equals(name))) {
-            capabilities.put(name, (String)value);
+            capabilities.put(name, (String) value);
         } else {
             throw new CapabilityIsNotFoundException(name);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        DriverCapabilities that = (DriverCapabilities) o;
+
+        return new EqualsBuilder()
+                .append(capabilities, that.capabilities)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(capabilities)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("capabilities", capabilities)
+                .toString();
     }
 }
