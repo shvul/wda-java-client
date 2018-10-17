@@ -51,9 +51,13 @@ Download [WebDriverAgent](https://github.com/shvul/WebDriverAgent) with tvOS sup
 ```
 git clone https://github.com/shvul/WebDriverAgent.git
 ```
-Move to WebDriverAgent folder
+Move to WebDriverAgent folder:
 ```
 cd ./WebDriverAgent
+```
+Build carthage dependencies:
+```
+sh ./Scripts/build.sh
 ```
 Switch to application-commands branch to use application install/activate/launch commands:
 ```
