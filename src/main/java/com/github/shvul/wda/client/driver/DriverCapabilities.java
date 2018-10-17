@@ -30,7 +30,7 @@ public class DriverCapabilities {
     public enum Key {
         APP_PATH("app"),
         BUNDLE_ID("bundleId"),
-        DEVICE_ID("deviceId"),
+        DEVICE_ID("udid"),
         DEVICE_IP("deviceIp"),
         DEVICE_NAME("deviceName"),
         LANGUAGE("language"),

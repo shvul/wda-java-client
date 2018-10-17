@@ -24,11 +24,12 @@ do not have Carthage on your system, it can also be installed with
 brew install carthage
 ```
 
-Install [ios-deploy](https://github.com/phonegap/ios-deploy) for app installation.
+Install [ios-deploy](https://github.com/phonegap/ios-deploy) for app installation on real devices.
 
 ```
 npm install -g ios-deploy
 ```
+
 ## Installation
 
 Add [jitpack](https://jitpack.io) repository to download and build github projects as dependencies:
@@ -58,6 +59,23 @@ Switch to application-commands branch to use application install/activate/launch
 ```
 git checkout -b application-commands origin/application-commands
 ```
+
+## Capabilities
+
+Differences noted here
+
+|Capability|Description|Values|
+|`app`|The absolute local path or remote http URL to a `.ipa` file| e.g., `/path/to/my.ipa`|
+|`bundleId`|Bundle ID of the app under test|e.g., `com.facebook.wda.integrationApp`|
+|`udid`|Unique device identifier of the connected physical device|e.g., `a248bf31a45b0153e088d05d66e12dc9316d117d`|
+|`deviceIp`|Ip of the physical device. It should be reachable from you network|e.g., `192.168.0.1`|
+|`deviceName`|The kind of mobile device or emulator to use|`Apple TV`, `Apple TV 4K`, `Apple TV 4K (at 1080p)`|
+|`language`|(Sim-only) Language to set for the simulator|e.g., `eng`|
+|`locale`|(Sim-only) Locale to set for the simulator|e.g., `eng_us`|
+|`osVersion`|(Sim-only) tvOS OS version|e.g., `12.0`|
+|`platform`|Which tvOS platform to use|`tvOS`, `tvOS Simulator`|
+|`usePrebuiltWDA`|Skips the build phase of running the WDA app. Building is then the responsibility of the user. Defaults to `false`.|e.g., `true`|
+|`wdaPath`|Path to WebDriverAgent xcode project|e.g., `path/to/WebDriverAgent/WebDriverAgent.xcodeproj`|
 
 ## Usage
 
