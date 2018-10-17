@@ -43,12 +43,16 @@ Add wda-java-client dependency:
 <dependency>
     <groupId>com.github.shvul</groupId>
     <artifactId>wda-java-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-beta-1</version>
 </dependency>
 ```
 Download [WebDriverAgent](https://github.com/shvul/WebDriverAgent) with tvOS support:
 ```
 git clone https://github.com/shvul/WebDriverAgent.git
+```
+Move to WebDriverAgent folder
+```
+cd ./WebDriverAgent
 ```
 Switch to application-commands branch to use application install/activate/launch commands:
 ```
