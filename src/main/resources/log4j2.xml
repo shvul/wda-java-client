@@ -2,20 +2,32 @@
 <Configuration status="info" name="WDA Java Client">
     <Properties>
         <property name="LOG_DIR">logs</property>
-        <property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{5} - %msg%n</property>
+        <property name="REGULAR_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{5} - %msg%n</property>
+        <property name="XCODE_PATTERN">%msg%n</property>
     </Properties>
     <ThresholdFilter level="trace"/>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout pattern="${REGULAR_PATTERN}"/>
         </Console>
         <File name="File" fileName="${LOG_DIR}/wda-client.log" append="false">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout pattern="${REGULAR_PATTERN}"/>
+        </File>
+        <Console name="Console-Xcode" target="SYSTEM_OUT">
+            <PatternLayout pattern="${XCODE_PATTERN}"/>
+        </Console>
+        <File name="File-Xcode" fileName="${LOG_DIR}/wda-server.log" append="false">
+            <PatternLayout pattern="${XCODE_PATTERN}"/>
         </File>
     </Appenders>
     <Loggers>
-        <Root level="ALL">
-            <Appender-ref ref="File" level="trace"/>
+        <Root level="all">
         </Root>
+        <Logger name="WDA Client">
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Logger name="WDA Server">
+            <AppenderRef ref="File-Xcode"/>
+        </Logger>
     </Loggers>
 </Configuration>
