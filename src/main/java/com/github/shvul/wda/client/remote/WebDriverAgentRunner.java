@@ -30,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +40,13 @@ public class WebDriverAgentRunner {
     private static final String WDA_STATE_FIELD = "state";
     private static final int WDA_AGENT_PORT = 8100;
     private static final int WDA_LAUNCH_TIMEOUT = 60;
-    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor(r->{
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        return thread;
+    });
+
     private DriverCapabilities capabilities;
     private CommandExecutor commandExecutor;
     private Process wdaProcess;
@@ -98,20 +103,24 @@ public class WebDriverAgentRunner {
     private void waitForReachability(URL url, int timeout) {
         LoggerManager.info("Wait for WebDriverAgent reachability.");
 
+        SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(executorService);
         try {
-            SimpleTimeLimiter.create(executorService).callWithTimeout(() -> {
+            timeLimiter.runWithTimeout(() -> {
                 long sleepMillis = 10L;
                 while (true) {
                     if (isUrlReachable(url)) {
-                        return sleepMillis;
+                        return;
                     }
 
-                    TimeUnit.MILLISECONDS.sleep(sleepMillis);
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(sleepMillis);
+                    } catch (InterruptedException ignored) {}
+
                     sleepMillis = sleepMillis >= 320L ? sleepMillis : sleepMillis * 2L;
                 }
             }, timeout, TimeUnit.SECONDS);
             LoggerManager.info("WebDriverAgent is reachable.");
-        } catch (TimeoutException | InterruptedException | ExecutionException e) {
+        } catch (TimeoutException | InterruptedException e) {
 
             Optional.ofNullable(wdaProcess).ifPresent(process -> {
                 String output = IOUtil.getOutput(wdaProcess);
