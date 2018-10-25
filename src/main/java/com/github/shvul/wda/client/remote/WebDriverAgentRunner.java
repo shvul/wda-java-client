@@ -127,6 +127,7 @@ public class WebDriverAgentRunner {
             connection = this.connectToUrl(url);
             return connection.getResponseCode() == HttpStatus.SC_OK;
         } catch ( IOException ignored) {
+            LoggerManager.error(ignored);
         } finally {
             if (connection != null) {
                 connection.disconnect();

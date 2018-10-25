@@ -106,7 +106,7 @@ public class DriverCapabilities {
     }
 
     public void usePrebuiltWda(boolean value) {
-        this.setCapability(Key.PLATFORM, String.valueOf(value));
+        this.setCapability(Key.PREBUILT_WDA, String.valueOf(value));
     }
 
     public String getCapability(String name) {
