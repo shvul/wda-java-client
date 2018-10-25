@@ -17,6 +17,7 @@
 package com.github.shvul.wda.client.remote;
 
 import com.github.shvul.wda.client.driver.CommandExecutor;
+import com.github.shvul.wda.client.support.IOUtil;
 import com.github.shvul.wda.client.support.LoggerManager;
 import com.github.shvul.wda.client.driver.DriverCapabilities;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
@@ -25,10 +26,8 @@ import com.google.common.util.concurrent.SimpleTimeLimiter;
 import org.apache.http.HttpStatus;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -41,7 +40,7 @@ public class WebDriverAgentRunner {
     private static final String WDA_BASE_URL = "http://localhost";
     private static final String WDA_STATE_FIELD = "state";
     private static final int WDA_AGENT_PORT = 8100;
-    private static final int WDA_LAUNCH_TIMEOUT = 120;
+    private static final int WDA_LAUNCH_TIMEOUT = 60;
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private DriverCapabilities capabilities;
     private CommandExecutor commandExecutor;
@@ -65,6 +64,9 @@ public class WebDriverAgentRunner {
                     .setDeviceId(capabilities.getCapability(DriverCapabilities.Key.DEVICE_ID))
                     .setOsVersion(capabilities.getCapability(DriverCapabilities.Key.OS_VERSION))
                     .build();
+            Runtime.getRuntime().addShutdownHook(new Thread(()->{
+                Optional.ofNullable(wdaProcess).ifPresent(Process::destroyForcibly);
+            }));
         } else {
             LoggerManager.info("Use existing WebDriverAgent process.");
         }
@@ -75,7 +77,10 @@ public class WebDriverAgentRunner {
 
     public void stop() {
         LoggerManager.info("Stop WebDriverAgent.");
-        Optional.ofNullable(wdaProcess).ifPresent(Process::destroyForcibly);
+        Optional.ofNullable(wdaProcess).ifPresent(process -> {
+            LoggerManager.getLogger(LoggerManager.SERVER_LOGGER_NAME).debug(IOUtil.getOutput(process));
+            process.destroyForcibly();
+        });
     }
 
     public URL getWdaUrl() {
@@ -92,22 +97,13 @@ public class WebDriverAgentRunner {
 
     private void waitForReachability(URL url, int timeout) {
         LoggerManager.info("Wait for WebDriverAgent reachability.");
+
         try {
             SimpleTimeLimiter.create(executorService).callWithTimeout(() -> {
-                HttpURLConnection connection = null;
                 long sleepMillis = 10L;
                 while (true) {
-                    try {
-                        connection = this.connectToUrl(url);
-                        if (connection.getResponseCode() == HttpStatus.SC_OK) {
-                            return connection.getResponseCode();
-                        }
-                    } catch (ConnectException | SocketTimeoutException e) {
-                        LoggerManager.debug(e.getMessage());
-                    } finally {
-                        if (connection != null) {
-                            connection.disconnect();
-                        }
+                    if (isUrlReachable(url)) {
+                        return sleepMillis;
                     }
 
                     TimeUnit.MILLISECONDS.sleep(sleepMillis);
@@ -116,8 +112,27 @@ public class WebDriverAgentRunner {
             }, timeout, TimeUnit.SECONDS);
             LoggerManager.info("WebDriverAgent is reachable.");
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
+
+            Optional.ofNullable(wdaProcess).ifPresent(process -> {
+                String output = IOUtil.getOutput(wdaProcess);
+                LoggerManager.getLogger(LoggerManager.SERVER_LOGGER_NAME).debug(output);
+            });
             throw new WebDriverAgentException(String.format("WDA is not reachable in %d seconds.", timeout), e);
         }
+    }
+
+    private boolean isUrlReachable(URL url) {
+        HttpURLConnection connection = null;
+        try {
+            connection = this.connectToUrl(url);
+            return connection.getResponseCode() == HttpStatus.SC_OK;
+        } catch ( IOException ignored) {
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return false;
     }
 
     private void checkStatus() {
