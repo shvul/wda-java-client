@@ -18,10 +18,7 @@ package com.github.shvul.wda.client.support;
 
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 public class CommandLineExecutor {
@@ -37,8 +34,8 @@ public class CommandLineExecutor {
         try {
             process = createProcess(command);
             process.waitFor(timeout, TimeUnit.SECONDS);
-            return getOutput(process);
-        } catch (InterruptedException | IOException e) {
+            return IOUtil.getOutput(process);
+        } catch (InterruptedException e) {
             throw new WebDriverAgentException(e);
         } finally {
             if (process != null) {
@@ -55,24 +52,5 @@ public class CommandLineExecutor {
         } catch (IOException e) {
             throw new WebDriverAgentException(e);
         }
-    }
-
-    private static String getOutput(Process process) throws IOException {
-        String error = getOutput(process.getErrorStream());
-        if (error.isEmpty()) {
-            return getOutput(process.getInputStream());
-        }
-        return error;
-    }
-
-    private static String getOutput(InputStream input) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-            while (buffer.ready()) {
-                builder.append(buffer.readLine());
-                builder.append("\n");
-            }
-        }
-        return builder.toString();
     }
 }
