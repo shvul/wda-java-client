@@ -18,6 +18,7 @@ package com.github.shvul.wda.client.support;
 
 import org.apache.http.util.Args;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class IOSDeploy {
     }
 
     public void installApp(String appPath) {
+        Args.check(new File(appPath).isFile(), "Unable to find file at path: " + appPath);
+
         List<String> command = new ArrayList<>();
         command.add(IOS_DEPLOY);
         command.add(IOSDeployKey.ID.getKey());

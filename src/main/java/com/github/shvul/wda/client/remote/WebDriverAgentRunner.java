@@ -64,7 +64,7 @@ public class WebDriverAgentRunner {
                     .setDeviceId(capabilities.getCapability(DriverCapabilities.Key.DEVICE_ID))
                     .setOsVersion(capabilities.getCapability(DriverCapabilities.Key.OS_VERSION))
                     .build();
-            Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 Optional.ofNullable(wdaProcess).ifPresent(Process::destroyForcibly);
             }));
         } else {
@@ -126,8 +126,8 @@ public class WebDriverAgentRunner {
         try {
             connection = this.connectToUrl(url);
             return connection.getResponseCode() == HttpStatus.SC_OK;
-        } catch ( IOException ignored) {
-            LoggerManager.error(ignored);
+        } catch (IOException e) {
+            LoggerManager.debug("Wait for WDA to be available: " + e.getMessage());
         } finally {
             if (connection != null) {
                 connection.disconnect();
