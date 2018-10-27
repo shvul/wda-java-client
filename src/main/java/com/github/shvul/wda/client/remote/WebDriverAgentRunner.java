@@ -22,6 +22,7 @@ import com.github.shvul.wda.client.support.LoggerManager;
 import com.github.shvul.wda.client.driver.DriverCapabilities;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
 import com.github.shvul.wda.client.support.XCodeBuilder;
+import com.github.shvul.wda.client.support.XcodeLogger;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import org.apache.http.HttpStatus;
 
@@ -41,7 +42,7 @@ public class WebDriverAgentRunner {
     private static final int WDA_AGENT_PORT = 8100;
     private static final int WDA_LAUNCH_TIMEOUT = 60;
 
-    private static final ExecutorService executorService = Executors.newSingleThreadExecutor(r->{
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(r -> {
         Thread thread = new Thread(r);
         thread.setDaemon(true);
         return thread;
@@ -69,9 +70,7 @@ public class WebDriverAgentRunner {
                     .setDeviceId(capabilities.getCapability(DriverCapabilities.Key.DEVICE_ID))
                     .setOsVersion(capabilities.getCapability(DriverCapabilities.Key.OS_VERSION))
                     .build();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                Optional.ofNullable(wdaProcess).ifPresent(Process::destroyForcibly);
-            }));
+            startWdaLogger();
         } else {
             LoggerManager.info("Use existing WebDriverAgent process.");
         }
@@ -82,10 +81,7 @@ public class WebDriverAgentRunner {
 
     public void stop() {
         LoggerManager.info("Stop WebDriverAgent.");
-        Optional.ofNullable(wdaProcess).ifPresent(process -> {
-            LoggerManager.getLogger(LoggerManager.SERVER_LOGGER_NAME).debug(IOUtil.getOutput(process));
-            process.destroyForcibly();
-        });
+        Optional.ofNullable(wdaProcess).ifPresent(Process::destroyForcibly);
     }
 
     public URL getWdaUrl() {
@@ -114,18 +110,14 @@ public class WebDriverAgentRunner {
 
                     try {
                         TimeUnit.MILLISECONDS.sleep(sleepMillis);
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException ignored) {
+                    }
 
                     sleepMillis = sleepMillis >= 320L ? sleepMillis : sleepMillis * 2L;
                 }
             }, timeout, TimeUnit.SECONDS);
             LoggerManager.info("WebDriverAgent is reachable.");
         } catch (TimeoutException | InterruptedException e) {
-
-            Optional.ofNullable(wdaProcess).ifPresent(process -> {
-                String output = IOUtil.getOutput(wdaProcess);
-                LoggerManager.getLogger(LoggerManager.SERVER_LOGGER_NAME).debug(output);
-            });
             throw new WebDriverAgentException(String.format("WDA is not reachable in %d seconds.", timeout), e);
         }
     }
@@ -161,5 +153,9 @@ public class WebDriverAgentRunner {
         connection.setReadTimeout(1000);
         connection.connect();
         return connection;
+    }
+
+    private void startWdaLogger() {
+        executorService.submit(new XcodeLogger(wdaProcess));
     }
 }

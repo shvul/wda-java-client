@@ -106,7 +106,7 @@ public class AppleTVElement implements TVElement {
 
     @Override
     public boolean isDisplayed() {
-        return (Boolean) execute(WDACommand.IS_ELEMENT_FOCUSED).getValue();
+        return (Boolean) execute(WDACommand.IS_ELEMENT_DISPLAYED).getValue();
     }
 
     @Override
