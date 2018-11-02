@@ -24,7 +24,6 @@ public class JsonConverter {
     private static ObjectMapper mapper = new ObjectMapper();
 
     static {
-        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
     }
 
