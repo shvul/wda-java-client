@@ -23,10 +23,10 @@
     <Loggers>
         <Root level="all">
         </Root>
-        <Logger name="WDA Client">
+        <Logger name="wda.client">
             <AppenderRef ref="File"/>
         </Logger>
-        <Logger name="WDA Server">
+        <Logger name="wda.xcode">
             <AppenderRef ref="File-Xcode"/>
         </Logger>
     </Loggers>

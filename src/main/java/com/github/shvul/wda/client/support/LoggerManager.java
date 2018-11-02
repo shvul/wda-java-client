@@ -26,8 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class LoggerManager {
-    public static final String CLIENT_LOGGER_NAME = "WDA Client";
-    public static final String SERVER_LOGGER_NAME = "WDA Server";
+    public static final String CLIENT_LOGGER_NAME = "wda.client";
+    public static final String SERVER_LOGGER_NAME = "wda.xcode";
     private static final String CLIENT_CONSOLE_APPENDER_NAME = "Console";
     private static final String SERVER_CONSOLE_APPENDER_NAME = "Console-Xcode";
     private static final Logger LOGGER = LoggerFactory.getLogger(CLIENT_LOGGER_NAME);
