@@ -27,6 +27,7 @@ import com.github.shvul.wda.client.remote.WDACommandExecutor;
 import com.github.shvul.wda.client.remote.WebDriverAgentRunner;
 import com.github.shvul.wda.client.support.IOSDeploy;
 import com.github.shvul.wda.client.support.LoggerManager;
+import com.github.shvul.wda.client.support.ResponseValueConverter;
 import com.google.common.collect.ImmutableMap;
 
 import java.awt.Dimension;
@@ -59,7 +60,7 @@ public class AppleTVDriver implements TVDriver {
         parameters.put(Parameter.USING.getKey(), locator.getSelector().getKey());
         parameters.put(Parameter.VALUE.getKey(), locator.getValue());
         RemoteResponse response = execute(WDACommand.FIND_ELEMENTS, new EnumMap<>(Wildcard.class), parameters);
-        return response.getValueAsElementsList(commandExecutor);
+        return new ResponseValueConverter(response).toElementsList(commandExecutor);
     }
 
     @Override
@@ -68,12 +69,12 @@ public class AppleTVDriver implements TVDriver {
         parameters.put(Parameter.USING.getKey(), locator.getSelector().getKey());
         parameters.put(Parameter.VALUE.getKey(), locator.getValue());
         RemoteResponse response = execute(WDACommand.FIND_ELEMENT, new EnumMap<>(Wildcard.class), parameters);
-        return response.getValueAsElement(commandExecutor);
+        return new ResponseValueConverter(response).toElement(commandExecutor);
     }
 
     @Override
     public TVElement focused() {
-        return execute(WDACommand.GET_FOCUSED_ELEMENT).getValueAsElement(commandExecutor);
+        return new ResponseValueConverter(execute(WDACommand.GET_FOCUSED_ELEMENT)).toElement(commandExecutor);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class AppleTVDriver implements TVDriver {
 
     @Override
     public Dimension getWindowSize() {
-        return execute(WDACommand.GET_CURRENT_WINDOW_SIZE).getValueAsDimension();
+        return new ResponseValueConverter(execute(WDACommand.GET_CURRENT_WINDOW_SIZE)).toDimension();
     }
 
     @Override

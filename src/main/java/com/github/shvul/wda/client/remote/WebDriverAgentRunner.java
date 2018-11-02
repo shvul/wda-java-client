@@ -17,10 +17,10 @@
 package com.github.shvul.wda.client.remote;
 
 import com.github.shvul.wda.client.driver.CommandExecutor;
-import com.github.shvul.wda.client.support.IOUtil;
 import com.github.shvul.wda.client.support.LoggerManager;
 import com.github.shvul.wda.client.driver.DriverCapabilities;
 import com.github.shvul.wda.client.exception.WebDriverAgentException;
+import com.github.shvul.wda.client.support.ResponseValueConverter;
 import com.github.shvul.wda.client.support.XCodeBuilder;
 import com.github.shvul.wda.client.support.XcodeLogger;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
@@ -140,7 +140,7 @@ public class WebDriverAgentRunner {
     private void checkStatus() {
         LoggerManager.info("Check WebDriverAgent status.");
         RemoteResponse response = commandExecutor.execute(WDACommand.STATUS);
-        String state = (String) response.getValueAsMap().get(WDA_STATE_FIELD);
+        String state = (String) new ResponseValueConverter(response).toMap().get(WDA_STATE_FIELD);
 
         if (!state.equals("success")) {
             throw new WebDriverAgentException("WDA returned error state: " + state);

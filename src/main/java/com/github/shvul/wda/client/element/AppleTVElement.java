@@ -21,6 +21,7 @@ import com.github.shvul.wda.client.driver.OutputImageType;
 import com.github.shvul.wda.client.remote.RemoteResponse;
 import com.github.shvul.wda.client.remote.WDACommand;
 import com.github.shvul.wda.client.remote.WDACommand.Wildcard;
+import com.github.shvul.wda.client.support.ResponseValueConverter;
 import com.google.common.collect.ImmutableMap;
 
 import java.awt.Dimension;
@@ -92,7 +93,7 @@ public class AppleTVElement implements TVElement {
         parameters.put(WDACommand.Parameter.USING.getKey(), locator.getSelector().getKey());
         parameters.put(WDACommand.Parameter.VALUE.getKey(), locator.getValue());
         RemoteResponse response = execute(WDACommand.FIND_CHILD_ELEMENTS, new EnumMap<>(Wildcard.class), parameters);
-        return response.getValueAsElementsList(commandExecutor);
+        return new ResponseValueConverter(response).toElementsList(commandExecutor);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class AppleTVElement implements TVElement {
         parameters.put(WDACommand.Parameter.USING.getKey(), locator.getSelector().getKey());
         parameters.put(WDACommand.Parameter.VALUE.getKey(), locator.getValue());
         RemoteResponse response = execute(WDACommand.FIND_CHILD_ELEMENT, new EnumMap<>(Wildcard.class), parameters);
-        return response.getValueAsElement(commandExecutor);
+        return new ResponseValueConverter(response).toElement(commandExecutor);
     }
 
     @Override
@@ -111,17 +112,17 @@ public class AppleTVElement implements TVElement {
 
     @Override
     public Point getLocation() {
-        return execute(WDACommand.GET_ELEMENT_RECT).getValueAsPoint();
+        return new ResponseValueConverter(execute(WDACommand.GET_ELEMENT_RECT)).toPoint();
     }
 
     @Override
     public Dimension getSize() {
-        return execute(WDACommand.GET_ELEMENT_RECT).getValueAsDimension();
+        return new ResponseValueConverter(execute(WDACommand.GET_ELEMENT_RECT)).toDimension();
     }
 
     @Override
     public Rectangle getRect() {
-        return execute(WDACommand.GET_ELEMENT_RECT).getValueAsRect();
+        return new ResponseValueConverter(execute(WDACommand.GET_ELEMENT_RECT)).toRect();
     }
 
     @Override

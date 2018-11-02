@@ -16,21 +16,9 @@
 
 package com.github.shvul.wda.client.remote;
 
-import com.github.shvul.wda.client.driver.CommandExecutor;
-import com.github.shvul.wda.client.element.AppleTVElement;
-import com.github.shvul.wda.client.element.TVElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class RemoteResponse {
 
@@ -77,54 +65,6 @@ public class RemoteResponse {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Map getValueAsMap() {
-        return Optional.of(this.value)
-                .filter(HashMap.class::isInstance)
-                .map(HashMap.class::cast).orElseThrow(() -> new RuntimeException("Unable to extract map value."));
-    }
-
-    public ArrayList getValueAsList() {
-        return Optional.of(this.value)
-                .filter(ArrayList.class::isInstance)
-                .map(ArrayList.class::cast).orElseThrow(() -> new RuntimeException("Unable to extract list value."));
-    }
-
-    public Dimension getValueAsDimension() {
-        Map value = getValueAsMap();
-        return new Dimension((int) value.get("width"), (int) value.get("height"));
-    }
-
-    public Point getValueAsPoint() {
-        Map value = getValueAsMap();
-        return new Point((int) value.get("x"), (int) value.get("y"));
-    }
-
-    public Rectangle getValueAsRect() {
-        return new Rectangle(getValueAsPoint(), getValueAsDimension());
-    }
-
-    public List<TVElement> getValueAsElementsList(CommandExecutor commandExecutor) {
-        List<TVElement> elements = new ArrayList<>();
-        ArrayList responseList = getValueAsList();
-        for (Object elementEntry : responseList) {
-            elements.add(castToElement(elementEntry, commandExecutor));
-        }
-        return elements;
-    }
-
-    public TVElement getValueAsElement(CommandExecutor commandExecutor) {
-        return castToElement(value, commandExecutor);
-    }
-
-    private TVElement castToElement(Object entry, CommandExecutor commandExecutor) {
-        String uid = Optional.of(entry)
-                .filter(HashMap.class::isInstance)
-                .map(HashMap.class::cast)
-                .map(k -> (String) k.get("ELEMENT"))
-                .orElseThrow(() -> new RuntimeException("Unable to extract element uid value."));
-        return new AppleTVElement(sessionId, uid, commandExecutor);
     }
 
     public void setSessionId(String sessionId) {
