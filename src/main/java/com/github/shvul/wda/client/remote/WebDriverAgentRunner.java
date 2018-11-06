@@ -40,7 +40,7 @@ public class WebDriverAgentRunner {
     private static final String WDA_BASE_URL = "http://localhost";
     private static final String WDA_STATE_FIELD = "state";
     private static final int WDA_AGENT_PORT = 8100;
-    private static final int WDA_LAUNCH_TIMEOUT = 60;
+    private static final int DEFAULT_LAUNCH_TIMEOUT = 60;
 
     private static final ExecutorService executorService = Executors.newCachedThreadPool(r -> {
         Thread thread = new Thread(r);
@@ -75,7 +75,11 @@ public class WebDriverAgentRunner {
             LoggerManager.info("Use existing WebDriverAgent process.");
         }
 
-        waitForReachability(getWdaUrl(), WDA_LAUNCH_TIMEOUT);
+        int timeout = Optional.ofNullable(capabilities.getCapability(DriverCapabilities.Key.LAUNCH_TIMEOUT))
+                .map(Integer::valueOf)
+                .orElse(DEFAULT_LAUNCH_TIMEOUT);
+
+        waitForReachability(getWdaUrl(), timeout);
         checkStatus();
     }
 
@@ -118,6 +122,7 @@ public class WebDriverAgentRunner {
             }, timeout, TimeUnit.SECONDS);
             LoggerManager.info("WebDriverAgent is reachable.");
         } catch (TimeoutException | InterruptedException e) {
+            stop();
             throw new WebDriverAgentException(String.format("WDA is not reachable in %d seconds.", timeout), e);
         }
     }
@@ -143,6 +148,7 @@ public class WebDriverAgentRunner {
         String state = (String) new ResponseValueConverter(response).toMap().get(WDA_STATE_FIELD);
 
         if (!state.equals("success")) {
+            stop();
             throw new WebDriverAgentException("WDA returned error state: " + state);
         }
     }
