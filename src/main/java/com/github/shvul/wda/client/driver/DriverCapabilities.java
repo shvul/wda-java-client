@@ -34,6 +34,7 @@ public class DriverCapabilities {
         DEVICE_IP("deviceIp"),
         DEVICE_NAME("deviceName"),
         LANGUAGE("language"),
+        LAUNCH_TIMEOUT("launchTimeout"),
         LOCALE("locale"),
         OS_VERSION("osVersion"),
         PLATFORM("platform"),
@@ -99,6 +100,10 @@ public class DriverCapabilities {
 
     public void setLanguage(String value) {
         this.setCapability(Key.LANGUAGE, value);
+    }
+
+    public void setLaunchTimeout(int timeout) {
+        this.setCapability(Key.LAUNCH_TIMEOUT, String.valueOf(timeout));
     }
 
     public void setLocale(String value) {
