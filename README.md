@@ -78,6 +78,7 @@ These capabilities are available for java client configuration:
 |`deviceIp`|Ip of the physical device. It should be reachable from you network. Capability is required for real devices.|e.g., `192.168.0.1`|
 |`deviceName`|The kind of mobile device or emulator to use.|`Apple TV`, `Apple TV 4K`, `Apple TV 4K (at 1080p)`|
 |`language`|(Sim-only) Language to set for the simulator.|e.g., `eng`|
+|`launchTimeout`| WebDriverAgent startup timeout. Defaults to `60`.|e.g., `120`|
 |`locale`|(Sim-only) Locale to set for the simulator.|e.g., `eng_us`|
 |`osVersion`|(Sim-only) tvOS OS version.|e.g., `12.0`|
 |`platform`|Which tvOS platform to use. `*`|`tvOS`, `tvOS Simulator`|
